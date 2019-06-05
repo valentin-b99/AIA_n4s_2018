@@ -71,17 +71,21 @@ int ai_loop(void)
         return (puttest("STOP_SIMULATION\n", 1));
     if ((array = my_str_to_word_array_two(str, ':')) == NULL)
         return (puttest("STOP_SIMULATION\n", 1));
+    if (my_strcmp(array[35], "Track Cleared") == 0)
+        return(0);
     set_vars(&left, &right, &mid, array);
     if (get_next_line(0) == NULL)
         return (puttest("STOP_SIMULATION\n", 1));
     set_dir(mid, left, right);
     if (get_next_line(0) == NULL)
         return (puttest("STOP_SIMULATION\n", 1));
+    return (1);
 }
 
 int main(void)
 {
     char *str;
+    int res = 0;
 
     my_putstr("START_SIMULATION\n");
     if ((str = get_next_line(0)) == NULL)
@@ -91,8 +95,12 @@ int main(void)
     my_putstr("CAR_FORWARD:0.3\n");
     if ((str = get_next_line(0)) == NULL)
         return (puttest("STOP_SIMULATION\n", 1));
-    while (1)
-        ai_loop();
+    while (1) {
+        if ((res = ai_loop()) == 84)
+            return (84);
+        else if (res == 0)
+            break;
+    }
     my_putstr("STOP_SIMULATION\n");
     return (0);
 }
